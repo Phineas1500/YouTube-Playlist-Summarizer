@@ -1,0 +1,7 @@
+# YouTube Data API Key
+# Get this from: https://console.developers.google.com/
+YOUTUBE_API_KEY=key
+
+# Gemini API Key  
+# Get this from: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY=key
