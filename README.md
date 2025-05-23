@@ -59,12 +59,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 ## 🎮 Usage
 
-### Basic Usage
-```bash
-python youtube_playlist_analyzer.py
-```
-
-### Advanced Usage (Recommended)
+### Advanced Usage
 ```bash
 python advanced_analyzer.py
 ```
@@ -181,7 +176,6 @@ For playlists with 100+ videos:
 ├── 📄 README.md                    # This file
 ├── 📄 requirements.txt             # Python dependencies
 ├── 📄 env_example.txt              # Environment variables template
-├── 📄 youtube_playlist_analyzer.py # Basic analyzer
 ├── 📄 advanced_analyzer.py         # Advanced analyzer (recommended)
 ├── 📄 project_analysis_*.txt       # Generated results
 └── 📄 analysis_progress.json       # Temporary progress file
