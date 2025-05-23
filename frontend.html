@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist Project Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #4ECDC4;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e1e5e9;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-text {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .project-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .project-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .project-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .project-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .meta-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #c62828;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .jobs-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e1e5e9;
+        }
+
+        .job-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .job-info {
+            flex: 1;
+        }
+
+        .job-status {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .status-complete {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 YouTube Playlist Project Analyzer</h1>
+            <p>Analyze student projects from YouTube playlists using AI-powered transcription and analysis (Local Storage)</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>Process New Playlist</h2>
+                <div class="input-group">
+                    <label for="playlistUrl">YouTube Playlist URL:</label>
+                    <input type="url" id="playlistUrl" placeholder="https://www.youtube.com/playlist?list=..." />
+                </div>
+                <button class="btn" onclick="startProcessing()">🚀 Start Processing</button>
+            </div>
+
+            <div class="status-section" id="statusSection">
+                <h3>Processing Status</h3>
+                <div class="status-text" id="statusText">Initializing...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div id="progressPercent">0%</div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <h2>Analysis Results</h2>
+                
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be populated here -->
+                </div>
+
+                <h3>Identified Projects</h3>
+                <div id="projectsList">
+                    <!-- Projects will be populated here -->
+                </div>
+            </div>
+
+            <div class="jobs-section">
+                <h2>Recent Jobs</h2>
+                <button class="btn" onclick="loadJobs()" style="margin-bottom: 20px;">🔄 Refresh Jobs</button>
+                <div id="jobsList">
+                    <!-- Jobs will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        let currentJobId = null;
+        let statusInterval = null;
+
+        // Start processing a playlist
+        async function startProcessing() {
+            const playlistUrl = document.getElementById('playlistUrl').value.trim();
+            
+            if (!playlistUrl) {
+                alert('Please enter a YouTube playlist URL');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/process/playlist`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ playlistUrl })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentJobId = data.jobId;
+                    document.getElementById('statusSection').style.display = 'block';
+                    document.getElementById('resultsSection').style.display = 'none';
+                    
+                    // Start polling for status
+                    statusInterval = setInterval(checkStatus, 2000);
+                    
+                    showMessage(`Processing started! Job ID: ${currentJobId}`, 'success');
+                } else {
+                    showMessage(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Check processing status
+        async function checkStatus() {
+            if (!currentJobId) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/process/status/${currentJobId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    updateStatus(data);
+                    
+                    if (data.status === 'complete') {
+                        clearInterval(statusInterval);
+                        displayResults(data);
+                        loadJobs(); // Refresh jobs list
+                    } else if (data.status === 'error') {
+                        clearInterval(statusInterval);
+                        showMessage(`Processing failed: ${data.message}`, 'error');
+                    }
+                } else {
+                    console.error('Status check failed:', data);
+                }
+            } catch (error) {
+                console.error('Status check error:', error);
+            }
+        }
+
+        // Update status display
+        function updateStatus(data) {
+            document.getElementById('statusText').textContent = 
+                `${data.stage || 'Processing'}: ${data.message || 'In progress...'}`;
+            
+            const progress = data.progress || 0;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressPercent').textContent = `${progress}%`;
+        }
+
+        // Display final results
+        function displayResults(data) {
+            document.getElementById('statusSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // Display stats
+            if (data.data && data.data.stats) {
+                displayStats(data.data);
+            }
+
+            // Display projects
+            if (data.data && data.data.projects) {
+                displayProjects(data.data.projects);
+            }
+
+            showMessage('Processing completed successfully!', 'success');
+        }
+
+        // Display statistics
+        function displayStats(data) {
+            const statsGrid = document.getElementById('statsGrid');
+            const stats = [
+                { label: 'Total Videos', value: data.totalVideos || 0 },
+                { label: 'Processed Videos', value: data.processedVideos || 0 },
+                { label: 'Projects Found', value: data.projects ? data.projects.length : 0 },
+                { label: 'Failed Videos', value: data.failedVideos || 0 }
+            ];
+
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="stat-number">${stat.value}</div>
+                    <div class="stat-label">${stat.label}</div>
+                </div>
+            `).join('');
+        }
+
+        // Display projects
+        function displayProjects(projects) {
+            const projectsList = document.getElementById('projectsList');
+            
+            if (!projects || projects.length === 0) {
+                projectsList.innerHTML = '<p>No projects were identified in the analysis.</p>';
+                return;
+            }
+
+            projectsList.innerHTML = projects.map(project => `
+                <div class="project-card">
+                    <div class="project-title">${project.name || 'Unnamed Project'}</div>
+                    <div class="project-description">${project.description || 'No description available'}</div>
+                    <div class="project-meta">
+                        ${project.technologies ? project.technologies.map(tech => 
+                            `<span class="meta-tag">🔧 ${tech}</span>`
+                        ).join('') : ''}
+                        ${project.category ? `<span class="meta-tag">📁 ${project.category}</span>` : ''}
+                        ${project.complexity ? `<span class="meta-tag">📊 ${project.complexity}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load recent jobs
+        async function loadJobs() {
+            try {
+                const response = await fetch(`${API_BASE}/jobs`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayJobs(data.jobs || []);
+                } else {
+                    console.error('Failed to load jobs:', data);
+                }
+            } catch (error) {
+                console.error('Jobs loading error:', error);
+            }
+        }
+
+        // Display jobs list
+        function displayJobs(jobs) {
+            const jobsList = document.getElementById('jobsList');
+            
+            if (jobs.length === 0) {
+                jobsList.innerHTML = '<p>No jobs found.</p>';
+                return;
+            }
+
+            jobsList.innerHTML = jobs.map(job => `
+                <div class="job-item">
+                    <div class="job-info">
+                        <div><strong>Job ID:</strong> ${job.jobId}</div>
+                        <div><strong>Playlist:</strong> ${job.playlistUrl || 'N/A'}</div>
+                        <div><strong>Started:</strong> ${new Date(job.startTime).toLocaleString()}</div>
+                    </div>
+                    <div class="job-status status-${job.status}">
+                        ${job.status} (${job.progress || 0}%)
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show success/error messages
+        function showMessage(message, type) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.success-message, .error-message');
+            existingMessages.forEach(msg => msg.remove());
+
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+
+            // Insert after input section
+            const inputSection = document.querySelector('.input-section');
+            inputSection.parentNode.insertBefore(messageDiv, inputSection.nextSibling);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Load jobs on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadJobs();
+        });
+    </script>
+</body>
+</html> 
